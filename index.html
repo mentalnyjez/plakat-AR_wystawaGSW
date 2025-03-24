@@ -11,15 +11,9 @@
   <body>
     <a-scene 
       embedded 
-      arjs="
-        sourceType: webcam; 
-        trackingMethod: best; 
-        debugUIEnabled: false; 
-        basePath: ./
-      "
+      arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: true; basePath: ./"
     >
-
-      <!-- Pełny link do markera -->
+      <!-- Marker -->
       <a-nft
         type="nft"
         url="https://mentalnyjez.github.io/plakat-AR_wystawaGSW/marker/plakat_AR"
@@ -28,6 +22,7 @@
         smoothTolerance="0.01"
         smoothThreshold="5"
       >
+        <!-- Wideo renderowane na markerze -->
         <a-video 
           src="#video" 
           width="1.5" 
@@ -39,17 +34,21 @@
       <a-entity camera></a-entity>
     </a-scene>
 
+    <!-- TESTOWO: video z kontrolkami -->
     <video 
       id="video" 
       src="animacja.mp4" 
       loop 
       playsinline 
-      crossorigin="anonymous" 
-      style="display: none;"
-    ></video>
+      crossorigin="anonymous"
+      controls
+      style="display: block; width: 400px; position: absolute; bottom: 10px; left: 10px;"
+    >
+    </video>
 
+    <!-- Obsługa markerów -->
     <script>
-      console.log('✅ Ładuje scenę...');
+      console.log('✅ Scena AR się załadowała');
 
       var nftMarker = document.querySelector('a-nft');
       var video = document.querySelector('#video');
