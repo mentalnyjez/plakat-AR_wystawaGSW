@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>plakat-AR_wystawaGSW</title>
+    <title>Żywy Plakat AR</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar-nft.min.js"></script>
     <style>body { margin: 0; overflow: hidden; }</style>
@@ -23,7 +23,7 @@
         smoothTolerance="0.01" 
         smoothThreshold="5"
       >
-        <!-- Wideo, które wyświetli się na markerze -->
+        <!-- Wideo wyświetlane na markerze -->
         <a-video 
           src="#video" 
           width="1.5" 
@@ -40,11 +40,26 @@
       id="video" 
       src="animacja.mp4" 
       loop 
-      autoplay 
-      muted 
       playsinline 
       crossorigin="anonymous" 
       style="display: none;"
     ></video>
+
+    <!-- Nasłuch markerów + kontrola wideo -->
+    <script>
+      var nftMarker = document.querySelector('a-nft');
+      var video = document.querySelector('#video');
+
+      // Logowanie w konsoli stanu trackingu markera
+      nftMarker.addEventListener('markerFound', function() {
+        console.log('Marker found');
+        video.play();
+      });
+
+      nftMarker.addEventListener('markerLost', function() {
+        console.log('Marker lost');
+        video.pause();
+      });
+    </script>
   </body>
 </html>
