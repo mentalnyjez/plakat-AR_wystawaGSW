@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Plakat AR</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar-nft.min.js"></script>
+    <style>body { margin: 0; overflow: hidden; }</style>
+  </head>
+
+  <body>
+    <a-scene 
+      embedded 
+      arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false;"
+    >
+
+      <!-- Łączenie z NFT markerem -->
+      <a-nft 
+        type="nft" 
+        url="marker/plakat" 
+        smooth="true" 
+        smoothCount="10" 
+        smoothTolerance="0.01" 
+        smoothThreshold="5"
+      >
+        <!-- Wideo, które wyświetli się na markerze -->
+        <a-video 
+          src="#video" 
+          width="1.5" 
+          height="1" 
+          position="0 0 0">
+        </a-video>
+      </a-nft>
+
+      <!-- Kamera AR -->
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <!-- Definicja video -->
+    <video 
+      id="video" 
+      src="animacja.mp4" 
+      loop 
+      autoplay 
+      muted 
+      playsinline 
+      crossorigin="anonymous" 
+      style="display: none;"
+    ></video>
+  </body>
+</html>
