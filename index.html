@@ -1,105 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>plakat-AR_wystawaGSW</title>
-  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar-nft.min.js"></script>
-  <style>
-    body { margin: 0; overflow: hidden; }
-    #startBtn {
-      position: absolute; bottom: 20px; left: 20px; padding: 10px 20px;
-      background: #333; color: #fff; border: none; z-index: 20; cursor: pointer;
-    }
-    video#arVideo {
-      display: block; width: 150px; position: absolute;
-      bottom: 10px; left: 10px; z-index: 10;
-    }
-  </style>
-</head>
-
-<body>
-
-<!-- Start Button -->
-<button id="startBtn">▶ Start Video</button>
-
-<!-- AR Scene -->
-<a-scene
-  embedded
-  arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: true; basePath: ./"
->
-  <a-nft
-    type="nft"
-    url="https://mentalnyjez.github.io/plakat-AR_wystawaGSW/marker/plakat_AR"
-    smooth="true"
-    smoothCount="5"
-    smoothTolerance="0.01"
-    smoothThreshold="5"
-  >
-    <!-- AR Video Plane -->
-    <a-video 
-      id="arVideoPlane"
-      width="2" 
-      height="1.2"
-      position="0 0 1"
-      rotation="-90 0 0"
-      transparent="true"
-      crossOrigin="anonymous"
-      video-texture
-    ></a-video>
-  </a-nft>
-
-  <a-entity camera></a-entity>
-</a-scene>
-
-<!-- Video Source -->
-<video 
-  id="arVideo" 
-  src="animacja.mp4" 
-  loop 
-  playsinline 
-  crossorigin="anonymous" 
-  muted
-  style="display: block; width: 150px; position: absolute; bottom: 10px; left: 10px; z-index: 10;"
-></video>
-
-<!-- Dynamic Video Texture Update -->
-<script>
-  console.log('✅ AR scena załadowana');
-  const nftMarker = document.querySelector('a-nft');
-  const video = document.querySelector('#arVideo');
-  const startBtn = document.querySelector('#startBtn');
-
-  // Register A-Frame component to update video texture every frame
-  AFRAME.registerComponent('video-texture', {
-    tick: function () {
-      const videoPlane = document.querySelector('#arVideoPlane');
-      if (video.readyState >= 2) {
-        videoPlane.setAttribute('material', 'src', '#arVideo');
+  <head>
+    <meta charset="UTF-8" />
+    <title>plakat-AR_wystawaGSW</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar-nft.min.js"></script>
+    <style>
+      body { margin: 0; overflow: hidden; }
+      #startBtn {
+        position: absolute; bottom: 20px; left: 20px; padding: 10px 20px;
+        background: #333; color: #fff; border: none; z-index: 20; cursor: pointer;
       }
-    }
-  });
+      video#video {
+        display: block; width: 150px; position: absolute;
+        bottom: 10px; left: 10px; z-index: 10;
+      }
+    </style>
+  </head>
 
-  // Start video manually on button click (in case of mobile autoplay block)
-  startBtn.addEventListener('click', () => {
-    video.play();
-    console.log('▶ Video started manually');
-  });
+  <body>
+    <!-- Start Button -->
+    <button id="startBtn">▶ Start Video</button>
 
-  // Auto play when marker is found
-  nftMarker.addEventListener('markerFound', function() {
-    console.log('✅ Marker FOUND!');
-    video.play().then(() => {
-      console.log('▶ AR Video started automatically');
-    }).catch(err => console.log('⛔ Video Play Error:', err));
-  });
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: true; basePath: ./"
+    >
+      <!-- NFT Marker -->
+      <a-nft
+        type="nft"
+        url="https://mentalnyjez.github.io/plakat-AR_wystawaGSW/marker/plakat_AR"
+        smooth="true"
+        smoothCount="5"
+        smoothTolerance="0.01"
+        smoothThreshold="5"
+      >
+        <!-- Duży plane na AR Video -->
+        <a-video 
+          id="arVideoPlane"
+          width="4" 
+          height="2.25" 
+          position="0 0 0"
+          rotation="-90 0 0"
+          transparent="true"
+          crossOrigin="anonymous"
+          video-texture
+        ></a-video>
+      </a-nft>
 
-  // Pause when marker lost
-  nftMarker.addEventListener('markerLost', function() {
-    console.log('❌ Marker LOST!');
-    video.pause();
-  });
-</script>
+      <a-entity camera></a-entity>
+    </a-scene>
 
-</body>
+    <!-- Video źródłowe -->
+    <video 
+      id="arVideo" 
+      src="animacja.mp4"
+      loop
+      playsinline
+      crossorigin="anonymous"
+      muted
+      style="display: block; width: 150px; position: absolute; bottom: 10px; left: 10px; z-index: 10;"
+    ></video>
+
+    <script>
+      console.log('✅ Scena AR załadowana');
+      const nftMarker = document.querySelector('a-nft');
+      const video = document.querySelector('#arVideo');
+      const startBtn = document.querySelector('#startBtn');
+      const arVideoPlane = document.querySelector('#arVideoPlane');
+
+      // Po załadowaniu video przypnij je jako teksturę
+      video.addEventListener('loadeddata', () => {
+        arVideoPlane.setAttribute('material', 'src', '#arVideo');
+        console.log('✅ Video texture przypięta do a-video');
+      });
+
+      // Ręczny start
+      startBtn.addEventListener('click', () => {
+        video.play();
+        console.log('▶ Video started manually');
+      });
+
+      // Obsługa markera
+      nftMarker.addEventListener('markerFound', function() {
+        console.log('✅ Marker FOUND!');
+        video.play().then(() => console.log('▶ AR Video started automatically')).catch(err => console.log('⛔ Video Play Error:', err));
+      });
+
+      nftMarker.addEventListener('markerLost', function() {
+        console.log('❌ Marker LOST!');
+        video.pause();
+      });
+    </script>
+  </body>
 </html>
