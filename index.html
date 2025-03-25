@@ -7,21 +7,29 @@
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar-nft.min.js"></script>
   <style>
     body { margin: 0; overflow: hidden; }
+    #startBtn {
+      position: absolute; bottom: 20px; left: 20px; padding: 10px 20px;
+      background: #333; color: #fff; border: none; z-index: 20; cursor: pointer;
+    }
+    /* Ukrywamy video z testowym podglądem */
+    video#arVideo { display: none; }
   </style>
 </head>
 
 <body>
+  <button id="startBtn">▶ Start Video</button>
+
   <a-scene
     embedded
-    arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false; basePath: ./"
+    arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: true; basePath: ./"
   >
     <a-nft
       type="nft"
       url="https://mentalnyjez.github.io/plakat-AR_wystawaGSW/marker/plakat_AR"
       smooth="true"
-      smoothCount="5"
+      smoothCount="10"
       smoothTolerance="0.01"
-      smoothThreshold="5"
+      smoothThreshold="0.5"
     >
       <a-video 
         id="arVideoPlane"
@@ -31,7 +39,7 @@
         position="0 0 0"
         rotation="-90 270 90"
         crossOrigin="anonymous"
-        opacity="0"
+        material="opacity: 0;"
       ></a-video>
     </a-nft>
 
@@ -45,7 +53,6 @@
     playsinline
     crossorigin="anonymous"
     muted
-    style="display: none;"
   ></video>
 
   <script>
@@ -54,34 +61,46 @@
     const nftMarker = document.querySelector('a-nft');
     const video = document.querySelector('#arVideo');
     const videoPlane = document.querySelector('#arVideoPlane');
+    const startBtn = document.querySelector('#startBtn');
+
+    // Fade-in / Fade-out function
+    function fadeIn() {
+      videoPlane.setAttribute('material', 'opacity', 0);
+      videoPlane.setAttribute('animation__fadein', {
+        property: 'material.opacity',
+        to: 1,
+        dur: 500
+      });
+    }
+
+    function fadeOut() {
+      videoPlane.setAttribute('animation__fadeout', {
+        property: 'material.opacity',
+        to: 0,
+        dur: 500
+      });
+    }
+
+    // Manual start button (autoplay fallback)
+    startBtn.addEventListener('click', () => {
+      video.play();
+      console.log('▶ Video started manually');
+    });
 
     nftMarker.addEventListener('markerFound', function() {
       console.log('✅ Marker FOUND!');
-      video.play().then(() => console.log('▶ AR Video started automatically'))
-                  .catch(err => console.log('⛔ Video Play Error:', err));
-
-      // Resetuj stare animacje przed dodaniem nowej
-      videoPlane.removeAttribute('animation__fadeout');
-      videoPlane.setAttribute('animation__fadein', {
-        property: 'opacity',
-        to: 1,
-        dur: 1000,
-        easing: 'easeInOutQuad'
-      });
+      video.play()
+        .then(() => {
+          fadeIn();
+          console.log('▶ AR Video started automatically');
+        })
+        .catch(err => console.log('⛔ Video Play Error:', err));
     });
 
     nftMarker.addEventListener('markerLost', function() {
       console.log('❌ Marker LOST!');
       video.pause();
-
-      // Resetuj stare animacje przed dodaniem nowej
-      videoPlane.removeAttribute('animation__fadein');
-      videoPlane.setAttribute('animation__fadeout', {
-        property: 'opacity',
-        to: 0,
-        dur: 1000,
-        easing: 'easeInOutQuad'
-      });
+      fadeOut();
     });
   </script>
 </body>
