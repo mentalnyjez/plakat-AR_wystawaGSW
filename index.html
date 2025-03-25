@@ -8,7 +8,6 @@
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar-nft.min.js"></script>
 
-    <!-- Style -->
     <style>
       body { margin: 0; overflow: hidden; }
       #startBtn {
@@ -25,7 +24,7 @@
   </head>
 
   <body>
-    <!-- AR scena -->
+    <!-- AR SCENE -->
     <a-scene
       embedded
       arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: true; basePath: ./"
@@ -39,21 +38,20 @@
         smoothTolerance="0.01"
         smoothThreshold="5"
       >
-        <!-- WIDEO osadzone w markerze -->
-        <a-video 
-          src="#arVideo"
-          width="2" height="1.2"
+        <!-- Plane do renderowania VIDEO jako tekstura -->
+        <a-plane 
+          id="videoPlane"
+          width="2"
+          height="1.2"
           position="0 0 0.5"
-          autoplay
-          playsinline
-          material="color: red; opacity: 0.4"
-        ></a-video>
+          material="shader: flat; color: #222"
+        ></a-plane>
       </a-nft>
 
       <a-entity camera></a-entity>
     </a-scene>
 
-    <!-- WIDEO kontrolne (w rogu) -->
+    <!-- WIDEO ŹRÓDŁOWE -->
     <video 
       id="arVideo" 
       src="animacja.mp4"
@@ -72,21 +70,29 @@
       const nftMarker = document.querySelector('a-nft');
       const video = document.querySelector('#arVideo');
       const startBtn = document.querySelector('#startBtn');
+      const videoPlane = document.querySelector('#videoPlane');
 
-      // Ręczne uruchomienie
+      // Po załadowaniu danych video - podpinamy je jako teksturę
+      video.addEventListener('loadeddata', () => {
+        videoPlane.setAttribute('material', 'src', '#arVideo');
+        console.log('✅ Video texture attached to plane');
+      });
+
+      // Ręczny start - na wypadek blokad autoplay
       startBtn.addEventListener('click', () => {
         video.play();
         console.log('▶ Video started manually');
       });
 
-      // Obsługa markera
+      // Marker found
       nftMarker.addEventListener('markerFound', function() {
         console.log('✅ Marker FOUND!');
-        video.play()
-          .then(() => console.log('▶ AR Video started automatically'))
-          .catch(err => console.log('⛔ Video Play Error:', err));
+        video.play().then(() => {
+          console.log('▶ AR Video started automatically');
+        }).catch(err => console.log('⛔ Video Play Error:', err));
       });
 
+      // Marker lost
       nftMarker.addEventListener('markerLost', function() {
         console.log('❌ Marker LOST!');
         video.pause();
