@@ -13,6 +13,10 @@
       embedded 
       arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: true; basePath: ./"
     >
+      <a-assets>
+        <video id="arVideo" src="animacja.mp4" loop crossorigin="anonymous"></video>
+      </a-assets>
+
       <!-- NFT Marker -->
       <a-nft
         type="nft"
@@ -22,20 +26,18 @@
         smoothTolerance="0.01"
         smoothThreshold="5"
       >
-        <!-- WIDEO z testową ramką i pozycjonowaniem -->
         <a-video 
-          src="#video" 
+          src="#arVideo"
           width="1" 
           height="0.6" 
-          position="0 0 0.1"  <!-- 0.1 unosi wideo nad markerem -->
-          material="color: red; opacity: 0.5"
+          position="0 0 0.1"
         ></a-video>
       </a-nft>
 
       <a-entity camera></a-entity>
     </a-scene>
 
-    <!-- TESTOWE WIDEO -->
+    <!-- PODGLĄD video -->
     <video 
       id="video" 
       src="animacja.mp4" 
@@ -50,18 +52,20 @@
     <script>
       console.log('✅ Scena AR załadowana');
 
-      const nftMarker = document.querySelector('a-nft');
-      const video = document.querySelector('#video');
+      window.onload = () => {
+        const nftMarker = document.querySelector('a-nft');
+        const video = document.querySelector('#arVideo');
 
-      nftMarker.addEventListener('markerFound', function() {
-        console.log('✅ Marker FOUND!');
-        video.play();
-      });
+        nftMarker.addEventListener('markerFound', function() {
+          console.log('✅ Marker FOUND!');
+          video.play();
+        });
 
-      nftMarker.addEventListener('markerLost', function() {
-        console.log('❌ Marker LOST!');
-        video.pause();
-      });
+        nftMarker.addEventListener('markerLost', function() {
+          console.log('❌ Marker LOST!');
+          video.pause();
+        });
+      }
     </script>
   </body>
 </html>
