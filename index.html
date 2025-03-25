@@ -5,7 +5,20 @@
     <title>plakat-AR_wystawaGSW</title>
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar-nft.min.js"></script>
-    <style>body { margin: 0; overflow: hidden; }</style>
+    <style>
+      body { margin: 0; overflow: hidden; }
+      #startButton {
+        position: absolute;
+        bottom: 80px;
+        left: 10px;
+        z-index: 20;
+        padding: 10px 20px;
+        background-color: #333;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+      }
+    </style>
   </head>
 
   <body>
@@ -17,7 +30,6 @@
         <video id="arVideo" src="animacja.mp4" loop crossorigin="anonymous"></video>
       </a-assets>
 
-      <!-- NFT Marker -->
       <a-nft
         type="nft"
         url="https://mentalnyjez.github.io/plakat-AR_wystawaGSW/marker/plakat_AR"
@@ -48,24 +60,42 @@
       style="display: block; width: 150px; position: absolute; bottom: 10px; left: 10px; z-index: 10;"
     ></video>
 
-    <!-- Obsługa markera -->
+    <!-- PRZYCISK TESTOWY do ręcznego uruchomienia -->
+    <button id="startButton">▶ Start Video</button>
+
+    <!-- Obsługa markera z DEBUG -->
     <script>
       console.log('✅ Scena AR załadowana');
 
       window.onload = () => {
         const nftMarker = document.querySelector('a-nft');
-        const video = document.querySelector('#arVideo');
+        const arVideo = document.querySelector('#arVideo');
+        const startButton = document.querySelector('#startButton');
 
+        // Obsługa markerFound / markerLost
         nftMarker.addEventListener('markerFound', function() {
           console.log('✅ Marker FOUND!');
-          video.play();
+          arVideo.play().then(() => {
+            console.log('▶ AR Video started automatically');
+          }).catch(err => {
+            console.error('🚨 AR Video play error:', err);
+          });
         });
 
         nftMarker.addEventListener('markerLost', function() {
           console.log('❌ Marker LOST!');
-          video.pause();
+          arVideo.pause();
         });
-      }
+
+        // Obsługa przycisku ręcznego odpalenia video
+        startButton.addEventListener('click', () => {
+          arVideo.play().then(() => {
+            console.log('▶ AR Video started manually');
+          }).catch(err => {
+            console.error('🚨 Manual play error:', err);
+          });
+        });
+      };
     </script>
   </body>
 </html>
