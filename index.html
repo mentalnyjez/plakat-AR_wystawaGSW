@@ -7,29 +7,22 @@
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar-nft.min.js"></script>
   <style>
     body { margin: 0; overflow: hidden; }
-    #startBtn {
-      position: absolute; bottom: 20px; left: 20px; padding: 10px 20px;
-      background: #333; color: #fff; border: none; z-index: 20; cursor: pointer;
-    }
-    /* Ukrywamy video z testowym podglądem */
     video#arVideo { display: none; }
   </style>
 </head>
 
 <body>
-  <button id="startBtn">▶ Start Video</button>
-
   <a-scene
     embedded
-    arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: true; basePath: ./"
+    arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false; basePath: ./"
   >
     <a-nft
       type="nft"
       url="https://mentalnyjez.github.io/plakat-AR_wystawaGSW/marker/plakat_AR"
       smooth="true"
-      smoothCount="10"
+      smoothCount="15"
       smoothTolerance="0.01"
-      smoothThreshold="0.5"
+      smoothThreshold="0.3"
     >
       <a-video 
         id="arVideoPlane"
@@ -61,9 +54,7 @@
     const nftMarker = document.querySelector('a-nft');
     const video = document.querySelector('#arVideo');
     const videoPlane = document.querySelector('#arVideoPlane');
-    const startBtn = document.querySelector('#startBtn');
 
-    // Fade-in / Fade-out function
     function fadeIn() {
       videoPlane.setAttribute('material', 'opacity', 0);
       videoPlane.setAttribute('animation__fadein', {
@@ -80,12 +71,6 @@
         dur: 500
       });
     }
-
-    // Manual start button (autoplay fallback)
-    startBtn.addEventListener('click', () => {
-      video.play();
-      console.log('▶ Video started manually');
-    });
 
     nftMarker.addEventListener('markerFound', function() {
       console.log('✅ Marker FOUND!');
