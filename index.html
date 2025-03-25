@@ -14,21 +14,21 @@
 <body>
   <a-scene
     embedded
-    arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: false; basePath: ./"
+    arjs="sourceType: webcam; trackingMethod: best; minConfidence: 0.7; debugUIEnabled: false; basePath: ./"
   >
     <a-nft
       type="nft"
       url="https://mentalnyjez.github.io/plakat-AR_wystawaGSW/marker/plakat_AR"
       smooth="true"
-      smoothCount="20"
-      smoothTolerance="0.01"
-      smoothThreshold="0.2"
+      smoothCount="25"
+      smoothTolerance="0.005"
+      smoothThreshold="0.1"
     >
       <a-video 
         id="arVideoPlane"
         src="#arVideo"
-        width="100" 
-        height="168.75" 
+        width="125" 
+        height="210.94" 
         position="0 0 0"
         rotation="-90 270 90"
         crossOrigin="anonymous"
