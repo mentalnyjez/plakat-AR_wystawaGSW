@@ -60,7 +60,8 @@
       video.play().then(() => console.log('▶ AR Video started automatically'))
                   .catch(err => console.log('⛔ Video Play Error:', err));
 
-      // FADE IN
+      // Resetuj stare animacje przed dodaniem nowej
+      videoPlane.removeAttribute('animation__fadeout');
       videoPlane.setAttribute('animation__fadein', {
         property: 'opacity',
         to: 1,
@@ -73,7 +74,8 @@
       console.log('❌ Marker LOST!');
       video.pause();
 
-      // FADE OUT
+      // Resetuj stare animacje przed dodaniem nowej
+      videoPlane.removeAttribute('animation__fadein');
       videoPlane.setAttribute('animation__fadeout', {
         property: 'opacity',
         to: 0,
