@@ -33,14 +33,14 @@
       smoothTolerance="0.01"
       smoothThreshold="5"
     >
-      <!-- WIDEO W AR - ROTACJA POSTAWIONA -->
+      <!-- WIDEO W FORMACIE PIONOWYM (9:16) -->
       <a-video 
         id="arVideoPlane"
         src="#arVideo"
-        width="250" 
-        height="140.625" 
+        width="112.5"      <!-- odpowiada 9 -->
+        height="200"       <!-- odpowiada 16 -->
         position="2 0 0"
-        rotation="-90 0 0"   <!-- KLUCZOWA ZMIANA - WIDEO STOI -->
+        rotation="-90 0 0"
         crossOrigin="anonymous"
       ></a-video>
     </a-nft>
@@ -48,6 +48,7 @@
     <a-entity camera></a-entity>
   </a-scene>
 
+  <!-- WIDEO ŹRÓDŁOWE -->
   <video 
     id="arVideo" 
     src="animacja.mp4"
