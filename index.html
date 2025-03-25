@@ -19,14 +19,12 @@
 </head>
 
 <body>
-  <!-- Przycisk dla ręcznego startu -->
   <button id="startBtn">▶ Start Video</button>
 
   <a-scene
     embedded
     arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: true; basePath: ./"
   >
-    <!-- NFT Marker -->
     <a-nft
       type="nft"
       url="https://mentalnyjez.github.io/plakat-AR_wystawaGSW/marker/plakat_AR"
@@ -35,14 +33,14 @@
       smoothTolerance="0.01"
       smoothThreshold="5"
     >
-      <!-- WIDEO W AR na markerze, powiększone -->
+      <!-- WIDEO powiększone 10x i obrócone pionowo -->
       <a-video 
         id="arVideoPlane"
         src="#arVideo"
-        width="6"
-        height="3.375"
+        width="10" 
+        height="5.625" 
         position="0 0 0"
-        rotation="-90 0 0"
+        rotation="-90 0 90"
         crossOrigin="anonymous"
         video-texture
       ></a-video>
@@ -51,7 +49,6 @@
     <a-entity camera></a-entity>
   </a-scene>
 
-  <!-- WIDEO ŹRÓDŁOWE -->
   <video 
     id="arVideo" 
     src="animacja.mp4"
@@ -68,13 +65,11 @@
     const video = document.querySelector('#arVideo');
     const startBtn = document.querySelector('#startBtn');
 
-    // Ręczny start przez przycisk
     startBtn.addEventListener('click', () => {
       video.play();
       console.log('▶ Video started manually');
     });
 
-    // Start i pauza na markerze
     nftMarker.addEventListener('markerFound', function() {
       console.log('✅ Marker FOUND!');
       video.play().then(() => console.log('▶ AR Video started automatically')).catch(err => console.log('⛔ Video Play Error:', err));
