@@ -3,33 +3,32 @@
   <head>
     <meta charset="UTF-8" />
     <title>plakat-AR_wystawaGSW</title>
-
-    <!-- A-Frame i AR.js -->
     <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar-nft.min.js"></script>
-
     <style>
       body { margin: 0; overflow: hidden; }
       #startBtn {
-        position: absolute; bottom: 20px; left: 20px;
-        padding: 10px 20px; background: #333; color: #fff;
-        border: none; z-index: 20; cursor: pointer;
+        position: absolute; bottom: 20px; left: 20px; padding: 10px 20px;
+        background: #333; color: #fff; border: none; z-index: 20; cursor: pointer;
       }
       video#arVideo {
-        display: block; width: 150px;
-        position: absolute; bottom: 10px; left: 10px;
-        z-index: 10;
+        display: none;
       }
     </style>
   </head>
 
   <body>
-    <!-- AR SCENE -->
-    <a-scene
+    <!-- Przycisk Start -->
+    <button id="startBtn">▶ Start Video</button>
+
+    <a-scene 
       embedded
+      renderer="logarithmicDepthBuffer: true"
       arjs="sourceType: webcam; trackingMethod: best; debugUIEnabled: true; basePath: ./"
+      vr-mode-ui="enabled: false"
+      transparent="true"
     >
-      <!-- NFT Marker -->
+      <!-- Marker NFT -->
       <a-nft
         type="nft"
         url="https://mentalnyjez.github.io/plakat-AR_wystawaGSW/marker/plakat_AR"
@@ -38,61 +37,61 @@
         smoothTolerance="0.01"
         smoothThreshold="5"
       >
-        <!-- Plane do renderowania VIDEO jako tekstura -->
-        <a-plane 
+        <!-- Wideo na płaszczyźnie w AR -->
+        <a-plane
           id="videoPlane"
           width="2"
           height="1.2"
           position="0 0 0.5"
-          material="shader: flat; color: #222"
+          material="shader: flat; src: #arVideo; side: double"
+          video-texture-updater
         ></a-plane>
       </a-nft>
 
       <a-entity camera></a-entity>
     </a-scene>
 
-    <!-- WIDEO ŹRÓDŁOWE -->
+    <!-- Ukryte wideo -->
     <video 
       id="arVideo" 
       src="animacja.mp4"
       loop
+      autoplay
+      muted
       playsinline
       crossorigin="anonymous"
-      muted
     ></video>
 
-    <!-- PRZYCISK START -->
-    <button id="startBtn">▶ Start Video</button>
+    <!-- Aktualizator tekstury -->
+    <script>
+      AFRAME.registerComponent('video-texture-updater', {
+        tick: function () {
+          const video = document.querySelector('#arVideo');
+          if (video.readyState >= video.HAVE_CURRENT_DATA) {
+            this.el.getObject3D('mesh').material.map.needsUpdate = true;
+          }
+        }
+      });
+    </script>
 
+    <!-- Obsługa -->
     <script>
       console.log('✅ Scena AR załadowana');
-
       const nftMarker = document.querySelector('a-nft');
       const video = document.querySelector('#arVideo');
       const startBtn = document.querySelector('#startBtn');
-      const videoPlane = document.querySelector('#videoPlane');
 
-      // Po załadowaniu danych video - podpinamy je jako teksturę
-      video.addEventListener('loadeddata', () => {
-        videoPlane.setAttribute('material', 'src', '#arVideo');
-        console.log('✅ Video texture attached to plane');
-      });
-
-      // Ręczny start - na wypadek blokad autoplay
       startBtn.addEventListener('click', () => {
         video.play();
         console.log('▶ Video started manually');
       });
 
-      // Marker found
       nftMarker.addEventListener('markerFound', function() {
         console.log('✅ Marker FOUND!');
-        video.play().then(() => {
-          console.log('▶ AR Video started automatically');
-        }).catch(err => console.log('⛔ Video Play Error:', err));
+        video.play().then(() => console.log('▶ AR Video started automatically'))
+                    .catch(err => console.log('⛔ Video Play Error:', err));
       });
 
-      // Marker lost
       nftMarker.addEventListener('markerLost', function() {
         console.log('❌ Marker LOST!');
         video.pause();
