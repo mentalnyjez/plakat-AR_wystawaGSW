@@ -17,23 +17,24 @@
     arjs="sourceType: webcam; trackingMethod: best; minConfidence: 0.7; debugUIEnabled: false; basePath: ./"
   >
     <a-nft
+      id="nft-marker"
       type="nft"
       url="https://mentalnyjez.github.io/plakat-AR_wystawaGSW/marker/plakat_AR"
-      smooth="true"
-      smoothCount="30"
-      smoothTolerance="0.001"
-      smoothThreshold="0.05"
+      smooth="false"
     >
-      <a-video 
-        id="arVideoPlane"
-        src="#arVideo"
-        width="125" 
-        height="210.94" 
-        position="0 0 0"
-        rotation="-90 270 90"
-        crossOrigin="anonymous"
-        material="opacity: 0;"
-      ></a-video>
+      <!-- STATIC POSITION -->
+      <a-entity id="locked-container" position="0 0 0" rotation="0 0 0">
+        <a-video 
+          id="arVideoPlane"
+          src="#arVideo"
+          width="125" 
+          height="210.94" 
+          position="0 0 0"
+          rotation="-90 270 90"
+          crossOrigin="anonymous"
+          material="opacity: 0;"
+        ></a-video>
+      </a-entity>
     </a-nft>
 
     <a-entity camera></a-entity>
@@ -51,7 +52,7 @@
   <script>
     console.log('✅ Scena AR załadowana');
 
-    const nftMarker = document.querySelector('a-nft');
+    const nftMarker = document.querySelector('#nft-marker');
     const video = document.querySelector('#arVideo');
     const videoPlane = document.querySelector('#arVideoPlane');
 
@@ -73,25 +74,22 @@
       });
     }
 
-    nftMarker.addEventListener('markerFound', function () {
+    nftMarker.addEventListener('markerFound', () => {
       console.log('✅ Marker FOUND!');
       video.play()
         .then(() => {
           fadeIn();
-          console.log('▶ AR Video started');
+          console.log('▶ AR Video started (static position)');
         })
         .catch(err => console.log('⛔ Video Play Error:', err));
 
-      // LOCK X and Z position (hard attach to marker)
-      const currentPos = videoPlane.getAttribute('position');
-      videoPlane.setAttribute('position', {
-        x: 0,
-        y: currentPos.y,
-        z: 0
-      });
+      // HARD STATIC: zapobiegamy dalszym aktualizacjom pozycji
+      const container = document.getElementById('locked-container');
+      container.setAttribute('position', '0 0 0');
+      container.setAttribute('rotation', '0 0 0');
     });
 
-    nftMarker.addEventListener('markerLost', function () {
+    nftMarker.addEventListener('markerLost', () => {
       console.log('❌ Marker LOST!');
       video.pause();
       fadeOut();
