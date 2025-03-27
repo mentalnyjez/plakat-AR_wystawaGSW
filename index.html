@@ -16,30 +16,30 @@
     embedded
     arjs="sourceType: webcam; trackingMethod: best; minConfidence: 0.7; debugUIEnabled: false; basePath: ./"
   >
+    <!-- Marker - służy tylko do triggerowania -->
     <a-nft
       id="nft-marker"
       type="nft"
       url="https://mentalnyjez.github.io/plakat-AR_wystawaGSW/marker/plakat_AR"
-      smooth="false"
-    >
-      <!-- STATIC POSITION -->
-      <a-entity id="locked-container" position="0 0 0" rotation="0 0 0">
-        <a-video 
-          id="arVideoPlane"
-          src="#arVideo"
-          width="125" 
-          height="210.94" 
-          position="0 0 0"
-          rotation="-90 270 90"
-          crossOrigin="anonymous"
-          material="opacity: 0;"
-        ></a-video>
-      </a-entity>
-    </a-nft>
+    ></a-nft>
+
+    <!-- AR Video - na stałe w przestrzeni -->
+    <a-video 
+      id="arVideoPlane"
+      src="#arVideo"
+      width="125" 
+      height="210.94" 
+      position="0 0 -2"       <!-- Możesz tu dostosować odległość -->
+      rotation="0 0 0"
+      crossOrigin="anonymous"
+      visible="false"
+      material="opacity: 0;"
+    ></a-video>
 
     <a-entity camera></a-entity>
   </a-scene>
 
+  <!-- Źródło wideo -->
   <video 
     id="arVideo" 
     src="animacja.mp4"
@@ -50,13 +50,12 @@
   ></video>
 
   <script>
-    console.log('✅ Scena AR załadowana');
-
     const nftMarker = document.querySelector('#nft-marker');
     const video = document.querySelector('#arVideo');
     const videoPlane = document.querySelector('#arVideoPlane');
 
     function fadeIn() {
+      videoPlane.setAttribute('visible', true);
       videoPlane.removeAttribute('animation__fadeout');
       videoPlane.setAttribute('animation__fadein', {
         property: 'material.opacity',
@@ -72,25 +71,23 @@
         to: 0,
         dur: 500
       });
+      setTimeout(() => {
+        videoPlane.setAttribute('visible', false);
+      }, 500);
     }
 
     nftMarker.addEventListener('markerFound', () => {
-      console.log('✅ Marker FOUND!');
+      console.log('✅ Marker FOUND (trigger only)');
       video.play()
         .then(() => {
           fadeIn();
-          console.log('▶ AR Video started (static position)');
+          console.log('▶ AR Video started (fixed position)');
         })
         .catch(err => console.log('⛔ Video Play Error:', err));
-
-      // HARD STATIC: zapobiegamy dalszym aktualizacjom pozycji
-      const container = document.getElementById('locked-container');
-      container.setAttribute('position', '0 0 0');
-      container.setAttribute('rotation', '0 0 0');
     });
 
     nftMarker.addEventListener('markerLost', () => {
-      console.log('❌ Marker LOST!');
+      console.log('❌ Marker LOST (trigger only)');
       video.pause();
       fadeOut();
     });
