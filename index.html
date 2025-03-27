@@ -20,9 +20,9 @@
       type="nft"
       url="https://mentalnyjez.github.io/plakat-AR_wystawaGSW/marker/plakat_AR"
       smooth="true"
-      smoothCount="25"
-      smoothTolerance="0.005"
-      smoothThreshold="0.1"
+      smoothCount="30"
+      smoothTolerance="0.001"
+      smoothThreshold="0.05"
     >
       <a-video 
         id="arVideoPlane"
@@ -56,7 +56,7 @@
     const videoPlane = document.querySelector('#arVideoPlane');
 
     function fadeIn() {
-      videoPlane.removeAttribute('animation__fadeout'); // reset fadeout
+      videoPlane.removeAttribute('animation__fadeout');
       videoPlane.setAttribute('animation__fadein', {
         property: 'material.opacity',
         to: 1,
@@ -65,7 +65,7 @@
     }
 
     function fadeOut() {
-      videoPlane.removeAttribute('animation__fadein'); // reset fadein
+      videoPlane.removeAttribute('animation__fadein');
       videoPlane.setAttribute('animation__fadeout', {
         property: 'material.opacity',
         to: 0,
@@ -73,17 +73,21 @@
       });
     }
 
-    nftMarker.addEventListener('markerFound', function() {
+    nftMarker.addEventListener('markerFound', function () {
       console.log('✅ Marker FOUND!');
       video.play()
         .then(() => {
           fadeIn();
-          console.log('▶ AR Video started automatically');
+          console.log('▶ AR Video started');
         })
         .catch(err => console.log('⛔ Video Play Error:', err));
+
+      // LOCK Z: reset pozycji Z na sztywno
+      const currentPos = videoPlane.getAttribute('position');
+      videoPlane.setAttribute('position', { x: currentPos.x, y: currentPos.y, z: 0 });
     });
 
-    nftMarker.addEventListener('markerLost', function() {
+    nftMarker.addEventListener('markerLost', function () {
       console.log('❌ Marker LOST!');
       video.pause();
       fadeOut();
