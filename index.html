@@ -82,9 +82,13 @@
         })
         .catch(err => console.log('⛔ Video Play Error:', err));
 
-      // LOCK Z: reset pozycji Z na sztywno
+      // LOCK X and Z position (hard attach to marker)
       const currentPos = videoPlane.getAttribute('position');
-      videoPlane.setAttribute('position', { x: currentPos.x, y: currentPos.y, z: 0 });
+      videoPlane.setAttribute('position', {
+        x: 0,
+        y: currentPos.y,
+        z: 0
+      });
     });
 
     nftMarker.addEventListener('markerLost', function () {
